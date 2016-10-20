@@ -16,5 +16,4 @@
 	matrixD: .space 36 
 
 .text:
-	#esto es un textp de prueba
 	
