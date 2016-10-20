@@ -18,7 +18,10 @@ int main(int argc, char *argv[]){
 	#define HEX_VALUE_OF_NEG_ZERO 0x80000000
 
 	// Declare variables
-	int i,j;
+	int i,j,;
+	int expMaskA, mantMaskA, signMaskA;
+	int expMaskB, mantMaskB, signMaskB;
+
 
 	float **A, **B, **C, **D;
 
@@ -105,8 +108,15 @@ int main(int argc, char *argv[]){
 			unsigned int* ptrToMatrixB = (unsigned int*)&B[i][j];
 			unsigned int* ptrToMatrixC = (unsigned int*)&C[i][j];
 
+			expMaskA = *ptrToMatrixA & 0x7F800000;
+			expMaskB = *ptrToMatrixB & 0x7F800000;
+			mantMaskA = *ptrToMatrixA & 0x007FFFFF;
+			mantMaskB = *ptrToMatrixB & 0x007FFFFF;
+			signMaskA = *ptrToMatrixA & 0x80000000;
+			signMaskB = *ptrToMatrixB & 0x80000000;
+
 			// 1. If A[i][j] == ±0 or B[i][j]== ±0, then C[i][j] = +0
-			if(*ptrToMatrixA == HEX_VALUE_OF_NEG_ZERO || *ptrToMatrixA == HEX_VALUE_OF_POS_ZERO || *ptrToMatrixB == HEX_VALUE_OF_NEG_ZERO || *ptrToMatrixB == HEX_VALUE_OF_POS_ZERO){
+			if(signMaskA == 0 ){
 				*ptrToMatrixC = HEX_VALUE_OF_POS_ZERO;
 			}
 
