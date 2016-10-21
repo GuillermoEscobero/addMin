@@ -29,8 +29,7 @@ int main(int argc, char *argv[]){
 	// Checks if the number of arguments introduced in the command line is correct
     if (argc != 6){
         printf("The number of arguments introduced is wrong\n");
-        
-        return -1;
+        exit(EXIT_FAILURE);
     }
 
 	// Casting matrix range argument to int
@@ -57,39 +56,62 @@ int main(int argc, char *argv[]){
 
 	// If the first file is not found, stop the program,
 	// else load it to the matrixA and then close the file
-
 	if(finputA == NULL){
-		printf("Error while opening the first file.\n");
-
-		return -1;
+		printf("\nError opening %s: No such file or directory\n", argv[2]);
+		exit(EXIT_FAILURE);
 	}else{
+		int counter = 0;
 		for(i = 0; i<N; i++){
 			for(j = 0; j<N; j++){
-				if(!fscanf(finputA, "%g", &A[i][j])){
-					break;
+				if(!fscanf(finputA, "%f", &A[i][j])) {
+					if(feof(finputA)){
+						break;
+					}else{
+						printf("\nERROR: an input value in %s is not float\n", argv[2]);
+						exit(EXIT_FAILURE);
+					}
+				}else{
+					counter++;
 				}
 			}
 		}
+		if(counter != N*N){
+			printf("\nERROR: number of elements in %s (%d) does not match with the matrix range provided (%s).\n", argv[2],counter,argv[1]);
+			exit(EXIT_FAILURE);
+		}
 	}
 	fclose(finputA);
+
 
 	// If the second file is not found, stop the program,
 	// else load it to the matrixB and then close the file
 
 	if(finputB == NULL){
-		printf("Error while opening the second file.\n");
-
-		return -1;
+		printf("\nError opening %s: No such file or directory\n", argv[3]);
+		exit(EXIT_FAILURE);
 	}else{
+		int counter = 0;
 		for(i = 0; i<N; i++){
 			for(j = 0; j<N; j++){
-				if(!fscanf(finputB, "%g", &B[i][j])){
-					break;
+				if(!fscanf(finputB, "%f", &B[i][j])) {
+					if(feof(finputB)){
+						break;
+					}else{
+						printf("\nERROR: an input value in %s is not float\n", argv[3]);
+						exit(EXIT_FAILURE);
+					}
+				}else{
+					counter++;
 				}
 			}
 		}
+		if(counter != N*N){
+			printf("\nERROR: number of elements in %s (%d) does not match with the matrix range provided (%s).\n", argv[3],counter,argv[1]);
+			exit(EXIT_FAILURE);
+		}
 	}
 	fclose(finputB);
+
 	printf("Done!\n");
 
 	// Conditions for filling C
@@ -156,9 +178,9 @@ int main(int argc, char *argv[]){
 
 	printf("Creating %s... ", argv[4]);
 	foutputC = fopen(argv[4], "w");
-	if(!foutputC){
-		printf("Error while creating %s\n", argv[4]);
-		return -1;
+	if(foutputC == NULL){
+		printf("\nError creating output file %s !\n", argv[4]);
+		exit(EXIT_FAILURE);
 	}
 
 	// Prints output matrix created in fileC
@@ -175,9 +197,9 @@ int main(int argc, char *argv[]){
 	// Create output file from matrix D
 	printf("Creating %s... ", argv[5]);
 	foutputD = fopen(argv[5], "w");
-	if(!foutputD){
-		printf("Error while creating %s\n", argv[5]);
-		return -1;
+	if(foutputD == NULL){
+		printf("\nError creating output file %s !\n", argv[5]);
+		exit(EXIT_FAILURE);
 	}
 
 	// Prints output matrix created in fileD
@@ -203,7 +225,7 @@ int main(int argc, char *argv[]){
 	free(D); 
 
 	printf("Program successfully executed. Check %s and %s!\n", argv[4],argv[5]);
-	return 0;
+	exit(EXIT_SUCCESS);
 }
 
 // Function returning the min between two numbers 
