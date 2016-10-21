@@ -104,7 +104,6 @@ int main(int argc, char *argv[]){
 			unsigned int* ptrToMatrixA = (unsigned int*)&A[i][j];
 			unsigned int* ptrToMatrixB = (unsigned int*)&B[i][j];
 			unsigned int* ptrToMatrixC = (unsigned int*)&C[i][j];
-			unsigned int* ptrToMatrixD = (unsigned int*)&D[i][j];
 
 			expMaskA = *ptrToMatrixA & 0x7F800000;
 			expMaskB = *ptrToMatrixB & 0x7F800000;
