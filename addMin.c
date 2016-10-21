@@ -126,8 +126,8 @@ int main(int argc, char *argv[]){
 			// and B[i][j] stores a non-normalized number as well, then C[i][j]=0
 			// 5. Else if A[i][j] stores a non-normalized (0 is considered as normalized)
 			// and B[i][j] stores a normalized one, then C[i][j]=B[i][j]
-			else if(expMaskA == 0 && mantMaskA != 0) {
-				if(expMaskB == 0 && mantMaskB != 0) {
+			else if(expMaskA == 0) {
+				if(expMaskB == 0) {
 					*ptrToMatrixC = HEX_VALUE_OF_POS_ZERO;
 				}else if(expMaskB != 0) {
 					C[i][j] = B[i][j];
@@ -139,9 +139,9 @@ int main(int argc, char *argv[]){
 			// 7. Else, in any other case, if A[i][j] stores a normalized value
 			// and B[i][j] too (0 is considered as normalized), C[i][j]=A[i][j] + B[i][j].
 			else if(expMaskA != 0){
-				if (expMaskB == 0 && mantMaskB != 0){
+				if (expMaskB == 0){
 					C[i][j] = A[i][j];
-				}else if(expMaskB == 0 && mantMaskB != 0) {
+				}else if(expMaskB != 0) {
 					C[i][j] = A[i][j] + B[i][j];
 				}
 			}
@@ -221,8 +221,8 @@ float min(float numbMatA, float numbMatB){
 
 	// Case: one of the two values is NaN
 	if((expMaskA == 0x7F800000 && mantMaskA != 0) || (expMaskB == 0x7F800000 && mantMaskB != 0)){
-		int hexNanValue = 0x7F800000;
-		float nanValue = (*(int*)&hexNanValue);
+		int hexNanValue = HEX_VALUE_OF_NAN;
+		float nanValue = *((float*)&hexNanValue);
 		return nanValue;
 	}
 
