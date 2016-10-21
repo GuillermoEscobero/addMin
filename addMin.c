@@ -75,8 +75,12 @@ int main(int argc, char *argv[]){
 				}
 			}
 		}
+		if(!feof(finputA)){
+			printf("\nERROR: number of elements in %s is too big to fit in the matrix range provided (%s).\n", argv[2],argv[1]);
+			exit(EXIT_FAILURE);
+		}
 		if(counter != N*N){
-			printf("\nERROR: number of elements in %s (%d) does not match with the matrix range provided (%s).\n", argv[2],counter,argv[1]);
+			printf("\nERROR: number of elements in %s (%d) is too small to fit in the matrix range provided (%s).\n", argv[2],counter,argv[1]);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -105,8 +109,12 @@ int main(int argc, char *argv[]){
 				}
 			}
 		}
+		if(!feof(finputB)){
+			printf("\nERROR: number of elements in %s is too big to fit in the matrix range provided (%s).\n", argv[3],argv[1]);
+			exit(EXIT_FAILURE);
+		}
 		if(counter != N*N){
-			printf("\nERROR: number of elements in %s (%d) does not match with the matrix range provided (%s).\n", argv[3],counter,argv[1]);
+			printf("\nERROR: number of elements in %s (%d) is too small to fit in the matrix range provided (%s).\n", argv[3],counter,argv[1]);
 			exit(EXIT_FAILURE);
 		}
 	}
