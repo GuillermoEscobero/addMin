@@ -16,5 +16,7 @@
 	matrixD: .space 36 
 
 .text:
-	#esto es un textp de prueba
+	minFloat: 
+		#hay que usar el stack y guardar el pc
+	
 	
