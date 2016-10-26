@@ -61,10 +61,13 @@
         lw $t2 ($s0)
         lw $t3 ($s1)
 
+        andi $t4 $t2 0x7F800000
+        andi $t5 $t3 0x7F800000
+        andi $t6 $t2 0x007FFFFF
+        andi $t7 $t3 0x007FFFFF
 
-        #if tal y tal pascual
-        #if tal y tal noseque 
-        #else tal tal
+
+        #aqui van las comparaciones, tengo que pensarme un modo elegante de hacerlas
 
 
         #increment the counter by one to check the next element
