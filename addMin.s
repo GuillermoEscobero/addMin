@@ -100,7 +100,81 @@
         jr $ra
 
 	minFloat:
-		#hay que usar el stack y guardar el pc
-        jr $ra
+    		#hay que usar el stack y guardar el pc
+            lw $t0, $a0
+            sll $t0, $t0, 23
+            addi $t0, $t0, 0xff
+            li $t1, 0xff
+            
+            bne $t0, $t1, or1
+
+            lw $t0, $a0
+            addi $t0, $t0, 0x7fffff
+
+            bnez $t0, OKif1
+
+        or1:
+            lw $t0, $a0
+            sll $t0, $t0, 23
+            addi $t0, $t0, 0xff
+            
+            bne $t0, $t1, if2
+
+            lw $t0, $a0
+            sll $t0, $t0, 31
+            addi $t0, $t0, 0x1
+
+            beqz $t0, if2
+
+        OKif1:
+            li $v0, 0x7FC00000
+            jr $ra
+
+        if2:
+            lw $t0, $a0
+            sll $t0, $t0, 31
+            addi $t0, $t0, 0x1
+            
+            beqz $t0, if3
+
+            lw $t0, $a1
+            sll $t0, $t0, 31
+            addi $t0, $t0, 0x1
+
+            bnez $t0, if3
+
+            move $v0, $a0
+            jr $ra
+
+        if3:
+            lw $t0, $a0
+            sll $t0, $t0, 31
+            addi $t0, $t0, 0x1
+            
+            bnez $t0, if4
+
+            lw $t0, $a1
+            sll $t0, $t0, 31
+            addi $t0, $t0, 0x1
+
+            beqz $t0, if4
+
+            move $v0, $a0
+            jr $ra
+
+        if4:
+            lw $t0, $a0
+            sll $t0, $t0, 31
+            addi $t0, $t0, 0x1
+            
+            bnez $t0, if5
+
+            slt $t0, $a0, $a1
+            beqz
+
+
+
+
+
 	end:
 	
