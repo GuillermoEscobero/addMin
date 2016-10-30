@@ -15,6 +15,8 @@
 	matrixC: .space 36
 	matrixD: .space 36
 
+    string: .asciiz "End of program\n"
+
     i: .word 0
 
     expMaskA: .space 4
@@ -40,8 +42,8 @@
         la $a2 matrixB
         #call the function addMin
         jal addMin
-        #check if the parameter returned in v0 is 0, if not there has been an error (go to the end of the program), falta sacar algo por pantalla
-        bnez $v0 end
+        #check if the parameter returned in v0 is 0, if not there has been an error (go to the error of the program), falta sacar algo por pantalla
+        bnez $v0 error
         #load dimension^2 and aux variable (i)
         lw $s0 i
         lw $s1 dimension
@@ -109,7 +111,7 @@
         #call the function minFloat
         jal minFloat
         #store in matrixD the number in $f0 (returning value of minFloat)
-        l.s $f0 ($s5)
+        s.s $f0 ($s5)
         #increment the counter by one to check the next element
         addi $s0 $s0 1
         #add 4 to the addres of the matrices to retrieve the next element of each matrix in the next iteration
@@ -150,7 +152,12 @@
         jr $ra
 
 	minFloat:
-        #store the registers that will be used in the stack and restore at the end //TODO
+        #store the registers that will be used in the stack and restore at the error //TODO
+        sub $sp $sp 12
+        sw $s2 8($sp)
+        sw $s3 4($sp)
+        sw $s4 0($sp)
+
         cvt.w.s $f0 $f12
         mfc1 $t0 $f0
 
@@ -203,24 +210,46 @@
         bgt $t1 $t0 returnNumbA
         b returnNumbB
 
-
     returnNaN:
         li $t0 0x7FC00000
         mtc1 $t0 $f0
         cvt.s.w $f0 $f0
+
+        lw $s4 ($sp)
+        lw $s3 4($sp)
+        lw $s2 8($sp)
+        add $sp $sp 12
+
         jr $ra
 
     returnNumbA:
         mtc1 $t0 $f0
         cvt.s.w $f0 $f0
+
+        lw $s4 ($sp)
+        lw $s3 4($sp)
+        lw $s2 8($sp)
+        add $sp $sp 12
+
         jr $ra
         
     returnNumbB:
         mtc1 $t1 $f0
         cvt.s.w $f0 $f0
+
+        lw $s4 ($sp)
+        lw $s3 4($sp)
+        lw $s2 8($sp)
+        add $sp $sp 12
+
+        jr $ra
+
+    error:
         jr $ra
 
     continue:
-        jr $ra
-	end:
-        jr $ra
+        li $v0 4
+        la $a0 string
+        syscall
+        li $v0 10
+        syscall
