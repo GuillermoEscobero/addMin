@@ -136,6 +136,7 @@
 
     continue:
         jal minFloat
+        
 
     addMin:
         #if(addMin == 0) no ha habido error de procesamiento, else addMin = -1 y
@@ -144,8 +145,90 @@
         jr $ra
 
 	minFloat:
-		#hay que usar el stack y guardar el pc
-        jr $ra
-	end:
+        lw $t0, $a0 
+        sll $t0, $t0, 23
+        andi $t0, $t0, 0xff
+        li $t1, 0xff
+        bne $t0, $t1, or1     
+
+        lw $t0, $a0       
+        andi $t0, $t0, 0x7fffff       
+      
+        bnez $t0, endNan      
+    
+        or1:      
+            lw $t0, $a0       
+            sll $t0, $t0, 23      
+            andi $t0, $t0, 0xff       
+                  
+            bne $t0, $t1, if2     
+      
+            lw $t0, $a0       
+            sll $t0, $t0, 31      
+            andi $t0, $t0, 0x1        
+      
+            beqz $t0, if2     
+      
+        endNan:       
+            li $v0, 0x7FC00000        
+            jr $ra        
+      
+        if2:      
+            lw $t0, $a0       
+            sll $t0, $t0, 31      
+            andi $t0, $t0, 0x1        
+                  
+            beqz $t0, if3     
+    
+            lw $t0, $a1       
+            sll $t0, $t0, 31      
+            andi $t0, $t0, 0x1        
+      
+            bnez $t0, if3     
+            b endA      
+      
+        if3:      
+            lw $t0, $a0       
+            sll $t0, $t0, 31      
+            andi $t0, $t0, 0x1        
+                  
+            bnez $t0, if4     
+      
+            lw $t0, $a1       
+            sll $t0, $t0, 31      
+            andi $t0, $t0, 0x1        
+      
+            beqz $t0, if4     
+            b endB      
+      
+        if4:      
+            lw $t0, $a0       
+            sll $t0, $t0, 31      
+            andi $t0, $t0, 0x1        
+                  
+            bnez $t0, if5     
+      
+            slt $t0, $a0, $a1     
+            bnez $t0, endA        
+            b endB      
+              
+        if5:        
+            slt $t0, $a0, $a1       
+            beqz $t0, endA      
+            b endB      
+              
+        endNan:     
+            li $v0, 0x7FC00000      
+            jr $ra   
+
+        endA: move $v0, $a0     
+            jr $ra   
+
+        endB: move $v0, $a1     
+            jr $ra
+	
+
+
+    end:
         jr $ra
 	
