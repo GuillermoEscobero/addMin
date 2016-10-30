@@ -3,14 +3,14 @@
 
 	dimension: .word 3 
 	matrixA:
-			.float 0.0, -2.3, 4.5 
-			.word 0x7FC00000, 0x7F800000, 0xFF800000
-			.float 3.4, 6.7, 9.9
+			.word 0x80000000, 0x7fffffff, 0xff800000
+			.float 25.0, 5.877472e-39, 2.0
+			.float 5.877472e-39, 1.0, 0.0
 
 	matrixB:
-			.float 0.0, -2.3, 4.5 
-			.word 0x7FC00000, 0x7F800000, 0xFF800000
-			.float 3.4, 6.7, 9.9
+			.float 2.0, 5.0, 52.0 
+			.float 3.2, 5.877472e-39, 2.0
+			.float 2.0, 5.877472e-39, 0.0
 
 	matrixC: .space 36
 	matrixD: .space 36
@@ -48,7 +48,7 @@
         lw $s1 dimension
         #obtain the total 
         mul $s1 $s1 $s1
-        #load the address of both matrices (do i have to do this or do i pass it through the standard paramteres registers?
+        #load the address of both matrices A and B (do i have to do this or do i pass it through the standard paramteres registers?
         la $s2 matrixA
         la $s3 matrixB
         #load matrixC address
@@ -78,8 +78,8 @@
         # 1. If A[i][j] == ±0 or B[i][j]== ±0, then C[i][j] = +0
         or $t8 $t0 $t2
         or $t9 $t1 $t3
-        and $t8 $t8 $t9
         beqz $t8 setMatrixCTo0
+        beqz $t9 setMatrixCTo0
 
         # 2. Else if A[i][j] == NaN or B[i][j]== NaN, then C[i][j] = NaN
         # 3. Else if A[i][j] == ±Inf or B[i][j]== ±Inf, then C[i][j] = NaN
@@ -90,12 +90,11 @@
         # and B[i][j] stores a non-normalized number as well, then C[i][j]=0
         # 5. Else if A[i][j] stores a non-normalized (0 is considered as normalized)
         # and B[i][j] stores a normalized one, then C[i][j]=B[i][j]
-        and $t8 $t0 0xFFFFFFFF
-        beqz $t8 checkExpMaskOfB
+        beqz $t0 checkExpMaskOfB
 
         # 6. Else if A[i][j] stores a normalized number (0 is considered as normalized)
         # and B[i][j] stores a non-normalized one, then C[i][j]=A[i][j]
-        and $t8 $t1 0xFFFFFFFF
+        and $t8 $t1 0x7F800000
         beqz $t8 setMatrixCtoMatrixA
 
         # 7. Else, in any other case, if A[i][j] stores a normalized value
@@ -125,7 +124,8 @@
         #go to address 'while' to do the loop again
         b while
 
-    setMatrixCTo0: 
+    setMatrixCTo0:
+        #store 0 into matrixC 
         sw $zero ($s4)
         b increment
 
@@ -140,8 +140,7 @@
         b increment
 
     checkExpMaskOfB:
-        and $t3 $t1 0x7FC00000
-        beqz $t3 setMatrixCTo0
+        beqz $t1 setMatrixCTo0
         #load the value of matrixB
         l.s $f0 ($s3)
         #store the value to matrixC
