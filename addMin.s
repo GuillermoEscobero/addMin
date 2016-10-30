@@ -51,6 +51,7 @@
         la $s3 matrixB
         #load matrixC address
         la $s4 matrixC
+        la $s5 matrixD
 
     while: bge $s0 $s1 continue
         #load the word of matrixA and in matrixB
@@ -102,12 +103,20 @@
         b increment
 
     increment:
+        #move the float values to the registers used to pass parameters
+        mov.s $f12 $f0
+        mov.s $f14 $f1
+        #call the function minFloat
+        jal minFloat
+        #store in matrixD the number in $f0 (returning value of minFloat)
+        l.s $f0 ($s5)
         #increment the counter by one to check the next element
         addi $s0 $s0 1
         #add 4 to the addres of the matrices to retrieve the next element of each matrix in the next iteration
         addi $s2 $s2 4
         addi $s3 $s3 4
         addi $s4 $s4 4
+        addi $s5 $s5 4
         #go to address while to do the loop again
         b while
 
@@ -134,10 +143,6 @@
         s.s $f0 ($s4)
         b increment
 
-    continue:
-        jal minFloat
-        
-
     addMin:
         #if(addMin == 0) no ha habido error de procesamiento, else addMin = -1 y
         #se para el programa
@@ -145,90 +150,77 @@
         jr $ra
 
 	minFloat:
-        lw $t0, $a0 
-        sll $t0, $t0, 23
-        andi $t0, $t0, 0xff
-        li $t1, 0xff
-        bne $t0, $t1, or1     
+        #store the registers that will be used in the stack and restore at the end //TODO
+        cvt.w.s $f0 $f12
+        mfc1 $t0 $f0
 
-        lw $t0, $a0       
-        andi $t0, $t0, 0x7fffff       
-      
-        bnez $t0, endNan      
+        cvt.w.s $f1 $f14
+        mfc1 $t1 $f1
+
+        #save the hex values of all 1s in mantissa and all 1s in the exponent to obtain later the masks
+        li $s2 0x7F800000
+        li $s3 0x007FFFFF
+        li $s4 0x80000000
+
+        #calculate the masks
+        and $t2 $s2 $t0 
+        and $t3 $s2 $t1
+        and $t4 $s3 $t0
+        and $t5 $s3 $t1
+        and $t6 $s4 $t0
+        and $t7 $s4 $t1
+
+    if1:
+        beq $t2 $s2 checkMantMaskOfA
+        beq $t3 $s2 checkMantMaskOfB
+
+    if2:
+        beq $t6 $s4 checkSignMaskB
+
+    if3: 
+        beqz $t6 checkSignMaskB
+
+    if4: 
+        beqz $t6 compareValues
+
+        bgt $t1 $t0 returnNumbB
+        b returnNumbA
     
-        or1:      
-            lw $t0, $a0       
-            sll $t0, $t0, 23      
-            andi $t0, $t0, 0xff       
-                  
-            bne $t0, $t1, if2     
-      
-            lw $t0, $a0       
-            sll $t0, $t0, 31      
-            andi $t0, $t0, 0x1        
-      
-            beqz $t0, if2     
-      
-        endNan:       
-            li $v0, 0x7FC00000        
-            jr $ra        
-      
-        if2:      
-            lw $t0, $a0       
-            sll $t0, $t0, 31      
-            andi $t0, $t0, 0x1        
-                  
-            beqz $t0, if3     
-    
-            lw $t0, $a1       
-            sll $t0, $t0, 31      
-            andi $t0, $t0, 0x1        
-      
-            bnez $t0, if3     
-            b endA      
-      
-        if3:      
-            lw $t0, $a0       
-            sll $t0, $t0, 31      
-            andi $t0, $t0, 0x1        
-                  
-            bnez $t0, if4     
-      
-            lw $t0, $a1       
-            sll $t0, $t0, 31      
-            andi $t0, $t0, 0x1        
-      
-            beqz $t0, if4     
-            b endB      
-      
-        if4:      
-            lw $t0, $a0       
-            sll $t0, $t0, 31      
-            andi $t0, $t0, 0x1        
-                  
-            bnez $t0, if5     
-      
-            slt $t0, $a0, $a1     
-            bnez $t0, endA        
-            b endB      
-              
-        if5:        
-            slt $t0, $a0, $a1       
-            beqz $t0, endA      
-            b endB      
-              
-        endNan:     
-            li $v0, 0x7FC00000      
-            jr $ra   
+	checkMantMaskOfA:
+        bnez $t4 returnNaN
+        b if2
 
-        endA: move $v0, $a0     
-            jr $ra   
+    checkMantMaskOfB:
+        bnez $t5 returnNaN
+        b if2
 
-        endB: move $v0, $a1     
-            jr $ra
-	
+    checkSignMaskB:
+        beqz $t7 returnNumbA
+        beq $t7 $s4 returnNumbB
+        b if3
+
+    compareValues:
+        bgt $t1 $t0 returnNumbA
+        b returnNumbB
 
 
-    end:
+    returnNaN:
+        li $t0 0x7FC00000
+        mtc1 $t0 $f0
+        cvt.s.w $f0 $f0
         jr $ra
-	
+
+    returnNumbA:
+        mtc1 $t0 $f0
+        cvt.s.w $f0 $f0
+        jr $ra
+        
+    returnNumbB:
+        mtc1 $t1 $f0
+        cvt.s.w $f0 $f0
+        jr $ra
+
+    continue:
+        jr $ra
+	end:
+        jr $ra
