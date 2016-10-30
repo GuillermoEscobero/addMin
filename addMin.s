@@ -108,10 +108,14 @@
 
     increment:
         #move the float values to the registers used to pass parameters
-        mov.s $f12 $f0
-        mov.s $f14 $f1
+        #mov.s $f12 $f0
+        #mov.s $f14 $f1
+        l.s $f12 ($s2)
+        l.s $f14 ($s3)
         #call the function minFloat
         jal minFloat
+        #convert
+        cvt.w.s $f0 $f0
         #store in matrixD the number in $f0 (returning value of minFloat)
         s.s $f0 ($s5)
         #increment the counter by one to check the next element
@@ -132,9 +136,9 @@
     setMatrixCToNaN:
         li $t0 0x7FC00000
         #move the word to the FPU
-        mtc1 $t0 $f0
+        mtc1 $t6 $f0
         #convert the word to float
-        cvt.s.w $f0 $f0
+        #cvt.s.w $f0 $f0
         #store the word in matrixC
         s.s $f0 ($s4)
         b increment
@@ -167,13 +171,13 @@
         sw $s3 4($sp)
         sw $s4 0($sp)
         #convert the parameter received to word type
-        cvt.w.s $f0 $f12
+        #cvt.w.s $f0 $f12
         #move from FPU to CPU
-        mfc1 $t0 $f0
+        mfc1 $t0 $f12
         #convert the parameter received to word type
-        cvt.w.s $f1 $f14
+        #cvt.w.s $f1 $f14
         #move from FPU to CPU
-        mfc1 $t1 $f1
+        mfc1 $t1 $f14
 
         #save the hex values of all 1s in mantissa, all 1s in the exponent and all 1s in the sign to obtain later the masks
         li $s2 0x7F800000
@@ -195,12 +199,12 @@
         beq $t3 $s2 checkMantMaskOfB
 
     if2:
-        #if sign mask of A equals 0x80000000 go to checkSignMaskB
-        beq $t6 $s4 checkSignMaskB
+        #if sign mask of A equals 0x80000000 go to checkSignMaskB1
+        beq $t6 $s4 checkSignMaskB1
 
     if3: 
-        #if sign mask of A equals 0 go to checkSignMaskB
-        beqz $t6 checkSignMaskB
+        #if sign mask of A equals 0 go to checkSignMaskB0
+        beqz $t6 checkSignMaskB0
 
     if4: 
         #if sign mask of A equals 0 go to compareValues
@@ -213,18 +217,26 @@
 	checkMantMaskOfA:
         #if mantissa mask of A is not 0, go to returnNaN
         bnez $t4 returnNaN
-        #else go to if2 and continue checkign conditions
+        #else go to if2 and continue checking conditions
         b if2
 
     checkMantMaskOfB:
         #if mantissa mask of B is not 0, go to returnNaN
         bnez $t5 returnNaN
-        #else go to if2 and continue checkign conditions
+        #else go to if2 and continue checking conditions
         b if2
 
-    checkSignMaskB:
+    checkSignMaskB1:
         #if sign mask of B is 0, go to returnNumbA
         beqz $t7 returnNumbA
+        #if sign mask of B is 0x80000000, go to returnNumbB
+        beq $t7 $s4 returnNumbB
+        #else go to if3 and continue checking conditions 
+        b if3
+
+    checkSignMaskB0:
+        #if sign mask of B is 0, go to if3 an continue comparing
+        beqz $t7 if3
         #if sign mask of B is 0x80000000, go to returnNumbB
         beq $t7 $s4 returnNumbB
         #else go to if3 and continue checking conditions 
