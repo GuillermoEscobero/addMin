@@ -235,12 +235,12 @@
         b if3
 
     checkSignMaskB0:
-        #if sign mask of B is 0, go to if3 an continue comparing
-        beqz $t7 if3
+        #if sign mask of B is 0, go to returnNumbA
+        #beqz $t7 returnNumbA
         #if sign mask of B is 0x80000000, go to returnNumbB
         beq $t7 $s4 returnNumbB
-        #else go to if3 and continue checking conditions 
-        b if3
+        #else go to if4 and continue checking conditions 
+        b if4
 
     compareValues:
         #if the value in matrixB is greater than the one in matrixA, go to returnNumbA
@@ -275,7 +275,7 @@
         lw $s2 8($sp)
         #move the stack pointer address to delete the stored registers
         add $sp $sp 12
-        #return to the next line after this function call
+        #return to the next line after minFloat function call
         jr $ra
         
     returnNumbB:
@@ -289,7 +289,7 @@
         lw $s2 8($sp)
         #move the stack pointer address to delete the stored registers
         add $sp $sp 12
-        #return to the next line after this function call
+        #return to the next line after minFloat function call
         jr $ra
 
     error:
