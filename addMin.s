@@ -1,19 +1,23 @@
 .data
    .align 2
 
-	dimension: .word 3 
+	dimension: .word 4 
 	matrixA:
-			.word 0x80000000, 0x7fffffff, 0xff800000
-			.float 25.0, 5.877472e-39, 2.0
-			.float 5.877472e-39, 1.0, 0.0
+			.float 1.4e-45, 0.1, 2.938736e-39, 7.0, -10.0, 15.0
+            .word 0x7f800000, 0xff800000, 0x7ffdefff, 0xff800000, 0x7f800000
+            .float -0.1, 0.0, -0.0
+            .word 0x7fc00000
+            .float 0.1
 
 	matrixB:
-			.float 2.0, 5.0, 52.0 
-			.float 3.2, 5.877472e-39, 2.0
-			.float 2.0, 5.877472e-39, 0.0
+			.float 2.938736e-39, 5.877472e-39, 1.4e-45, -10.0, 10.0, -0.1
+            .word 0xff800000, 0x7fffffff, 0xff800000, 0x7f800000, 0xff800000, 0xff800000
+            .float 2.938736e-39
+            .word 0x7fc00000, 0x7fc00000
+            .float 0.1
 
-	matrixC: .space 36
-	matrixD: .space 36
+	matrixC: .space 64
+	matrixD: .space 64
 
     i: .word 0
 
@@ -135,8 +139,8 @@
 
     setMatrixCToNaN:
         li $t0 0x7FC00000
-        #move the word to the FPU
-        mtc1 $t6 $f0
+        #move the NaN value to the FPU
+        mtc1 $t0 $f0
         #convert the word to float
         #cvt.s.w $f0 $f0
         #store the word in matrixC
@@ -208,7 +212,7 @@
 
     if4: 
         #if sign mask of A equals 0 go to compareValues
-        beqz $t6 compareValues
+        beqz $t6 comparePosValues
         #if the value in matrixB is greater than the one in matrixA, go to returnNumbB
         bgt $t1 $t0 returnNumbB
         #else go to returnNumbA
@@ -230,7 +234,7 @@
         #if sign mask of B is 0, go to returnNumbA
         beqz $t7 returnNumbA
         #if sign mask of B is 0x80000000, go to returnNumbB
-        beq $t7 $s4 returnNumbB
+        beq $t7 $s4 compareNegValues
         #else go to if3 and continue checking conditions 
         b if3
 
@@ -242,11 +246,17 @@
         #else go to if4 and continue checking conditions 
         b if4
 
-    compareValues:
+    comparePosValues:
         #if the value in matrixB is greater than the one in matrixA, go to returnNumbA
         bgt $t1 $t0 returnNumbA
         #else go to returnMatB
         b returnNumbB
+
+    compareNegValues:
+        #if the value in matrixB is greater than the one in matrixA, go to returnNumbB
+        bgt $t1 $t0 returnNumbB
+        #else go to returnMatA
+        b returnNumbA
 
     returnNaN:
         #load the hex value of NaN
