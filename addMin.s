@@ -21,16 +21,10 @@
 
     i: .word 0
 
-    expMaskA: .space 4
-    expMaskB: .space 4
-
-    mantMaskA: .space 4
-    mantMaskB: .space 4
-
 .text
     .globl main
     main:
-        #load 4 (word length) into t0
+        #load 4 (word length) into s0
         li $s0 4
         #load the dimension into t1 to operate with it
         lw $s1 dimension
