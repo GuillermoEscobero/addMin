@@ -6,7 +6,7 @@
 #define HEX_VALUE_OF_POS_INF 0x7F800000
 #define HEX_VALUE_OF_POS_ZERO 0x00000000
 
-int N; 
+int n; 
 
 /* function declaration */
 float min(float numbMatA, float numbMatB);
@@ -14,6 +14,7 @@ float min(float numbMatA, float numbMatB);
 int main(int argc, char *argv[]){
 
 	// Declare variables
+	int n;
 	int i,j;
 	int expMaskA, mantMaskA;
 	int expMaskB, mantMaskB;
@@ -33,20 +34,20 @@ int main(int argc, char *argv[]){
     }
 
 	// Casting matrix range argument to int
-	sscanf(argv[1],"%d", &N);
+	sscanf(argv[1],"%d", &n);
 
 	// Allocate memory for the matrices
-	A = (float **) malloc(N * sizeof(float *));
-	B = (float **) malloc(N * sizeof(float *));
-	C = (float **) malloc(N * sizeof(float *));
-	D = (float **) malloc(N * sizeof(float *));
+	A = (float **) malloc(n * sizeof(float *));
+	B = (float **) malloc(n * sizeof(float *));
+	C = (float **) malloc(n * sizeof(float *));
+	D = (float **) malloc(n * sizeof(float *));
 
  	//Allocate memory for the rows of each matrix
-	for(i = 0; i < N; i++){
-		A[i] = (float *) malloc(N * sizeof(float));
-		B[i] = (float *) malloc(N * sizeof(float));
-		C[i] = (float *) malloc(N * sizeof(float));
-		D[i] = (float *) malloc(N * sizeof(float));
+	for(i = 0; i < n; i++){
+		A[i] = (float *) malloc(n * sizeof(float));
+		B[i] = (float *) malloc(n * sizeof(float));
+		C[i] = (float *) malloc(n * sizeof(float));
+		D[i] = (float *) malloc(n * sizeof(float));
 	}
 
 	// Open input files
@@ -60,27 +61,27 @@ int main(int argc, char *argv[]){
 		printf("\nError opening %s: No such file or directory\n", argv[2]);
 		exit(EXIT_FAILURE);
 	}else{
-		int counter = 0;
-		for(i = 0; i<N; i++){
-			for(j = 0; j<N; j++){
-				if(!fscanf(finputA, "%f", &A[i][j])) {
-					if(feof(finputA)){
-						break;
-					}else{
+		int counter = -1;
+		for(i = 0;  ; i++){
+			for(j = 0; j<n; j++){
+				if(feof(finputA)){
+						goto out;
+				}else if(!fscanf(finputA, "%f", &A[i][j])) {
 						printf("\nERROR: an input value in %s is not float\n", argv[2]);
 						exit(EXIT_FAILURE);
-					}
 				}else{
 					counter++;
 				}
 			}
 		}
-		if(!feof(finputA)){
-			printf("\nERROR: number of elements in %s is too big to fit in the matrix range provided (%s).\n", argv[2],argv[1]);
-			exit(EXIT_FAILURE);
-		}
-		if(counter != N*N){
-			printf("\nERROR: number of elements in %s (%d) is too small to fit in the matrix range provided (%s).\n", argv[2],counter,argv[1]);
+		out:
+		printf("Counter:%d\n", counter);
+		// if(!feof(finputA)){
+		// 	printf("\nERROR: number of elements in %s is too big to fit in the matrix range provided (%s).\n", argv[2],argv[1]);
+		// 	exit(EXIT_FAILURE);
+		// }
+		if(counter != n*n){
+			printf("\nERROR: number of elements in %s (%d) does not fit in the matrix range provided (%s).\n", argv[2],counter,argv[1]);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -94,27 +95,26 @@ int main(int argc, char *argv[]){
 		printf("\nError opening %s: No such file or directory\n", argv[3]);
 		exit(EXIT_FAILURE);
 	}else{
-		int counter = 0;
-		for(i = 0; i<N; i++){
-			for(j = 0; j<N; j++){
-				if(!fscanf(finputB, "%f", &B[i][j])) {
-					if(feof(finputB)){
-						break;
-					}else{
+		int counter = -1;
+		for(i = 0;  ; i++){
+			for(j = 0; j<n; j++){
+				if(feof(finputB)){
+						goto out2;
+				}else if(!fscanf(finputB, "%f", &B[i][j])) {
 						printf("\nERROR: an input value in %s is not float\n", argv[3]);
 						exit(EXIT_FAILURE);
-					}
 				}else{
 					counter++;
 				}
 			}
 		}
-		if(!feof(finputB)){
-			printf("\nERROR: number of elements in %s is too big to fit in the matrix range provided (%s).\n", argv[3],argv[1]);
-			exit(EXIT_FAILURE);
-		}
-		if(counter != N*N){
-			printf("\nERROR: number of elements in %s (%d) is too small to fit in the matrix range provided (%s).\n", argv[3],counter,argv[1]);
+		out2:
+		// if(!feof(finputB)){
+		// 	printf("\nERROR: number of elements in %s is too big to fit in the matrix range provided (%s).\n", argv[3],argv[1]);
+		// 	exit(EXIT_FAILURE);
+		// }
+		if(counter != n*n){
+			printf("\nERROR: number of elements in %s (%d) does not fit in the matrix range provided (%s).\n", argv[3],counter,argv[1]);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -124,8 +124,8 @@ int main(int argc, char *argv[]){
 
 	// Conditions for filling C
 	printf("Computing conditions... ");
-	for(i = 0; i<N; i++){
-		for(j = 0; j<N; j++){
+	for(i = 0; i<n; i++){
+		for(j = 0; j<n; j++){
 
 			// Esto son los punteros a la direccion de memoria donde se encuentra
 			// el elemento i j de la matriz que estan casteados a numero entero 
@@ -192,8 +192,8 @@ int main(int argc, char *argv[]){
 	}
 
 	// Prints output matrix created in fileC
-	for(i = 0; i<N; i++){
-		for(j = 0; j<N; j++){
+	for(i = 0; i<n; i++){
+		for(j = 0; j<n; j++){
 			fprintf(foutputC, "%g ", C[i][j]);
 		}
 		fprintf(foutputC, "\n");
@@ -211,8 +211,8 @@ int main(int argc, char *argv[]){
 	}
 
 	// Prints output matrix created in fileD
-	for(i = 0; i<N; i++){
-		for(j = 0; j<N; j++){
+	for(i = 0; i<n; i++){
+		for(j = 0; j<n; j++){
 			fprintf(foutputD, "%g ", D[i][j]);
 		}
 		fprintf(foutputD, "\n");
@@ -221,7 +221,7 @@ int main(int argc, char *argv[]){
 	printf("Done!\n");
 
 	// Free memory
-	for (i = 0; i < N; i++){
+	for (i = 0; i < n; i++){
  		free(A[i]);
  		free(B[i]);
  		free(C[i]);
