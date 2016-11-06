@@ -1,6 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+* Lab assignment 1: Introduction to C & Assembly
+* addMin.c
+* Recieves two files with a float matrix. Compares them, and
+* depending on the inputs, it generates an output file C and
+* an output file D
+*
+* @author Guillermo Escobero & Raul Olmedo
+* @args range, inputFile1, inputFile2, outputFile1, outputFile2
+*/
+
 // Define constants (IEEE 754 bit patterns in hexadecimal).
 #define HEX_VALUE_OF_NAN 0x7FC00000
 #define HEX_VALUE_OF_POS_INF 0x7F800000
@@ -228,7 +239,7 @@ int main(int argc, char *argv[]){
 
 	// If fileC cannot be created, throws an error and exit the program.
 	if(foutputC == NULL){
-		printf("\nError creating output file %s !\n", argv[4]);
+		printf("\nERROR: creating output file %s failed!\n", argv[4]);
 		exit(EXIT_FAILURE);
 	}
 
@@ -248,7 +259,7 @@ int main(int argc, char *argv[]){
 	foutputD = fopen(argv[5], "w");
 
 	if(foutputD == NULL){
-		printf("\nError creating output file %s !\n", argv[5]);
+		printf("\nERROR: creating output file %s failed!\n", argv[5]);
 		exit(EXIT_FAILURE);
 	}
 
@@ -261,7 +272,7 @@ int main(int argc, char *argv[]){
 	fclose(foutputD);
 	printf("Done!\n");
 
-	// Free memory used by the four matrixes.
+	// Frees memory used by the four matrixes.
 	for (i = 0; i < n; i++){
  		free(A[i]);
  		free(B[i]);
