@@ -50,7 +50,7 @@
         #check if the parameter returned in v0 is 0, if not there has been an error (go to the error of the program)
         bnez $v0 error
 
-        #if not, go to the end 
+        #if there is no error, go to the end 
         b end
 
     addMin:
@@ -249,11 +249,11 @@
         #if sign mask of B is 0, go to returnNumbA
         beqz $t7 returnNumbA
 
-        #if sign mask of B is 0x80000000, go to returnNumbB
+        #if sign mask of B is 0x80000000, go to compareNegValues
         beq $t7 $s4 compareNegValues
 
-        #else go to if3 and continue checking conditions 
-        b if3
+        #else there has been an error
+        b error
 
     checkSignMaskB0:
         #if sign mask of B is 0x80000000, go to returnNumbB
@@ -356,4 +356,5 @@
     end:
         #end of program
         li $v0 10
+
         syscall
