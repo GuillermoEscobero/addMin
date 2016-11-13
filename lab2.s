@@ -7,24 +7,28 @@
 
 
 .text
-    
+
     main:
       la $a0 R0
       la $a1 V0
       la $a2 V1
       li $a3 10
-      
+
       jal addv_1
-      b finish
+
+      jal seqv_1
+
+      jal addv_1_test1
+
 
 
     addv_1:   bge $a3 $0 continue1
               li $a0 -1
               jr $ra
 
-  continue1:  add $t0 $0 $a0 #lw $t0 ($a0) # Result Vector (R0)
-              add $t1 $0 $a1 #lw $t1 ($a1) # V0
-              add $t2 $0 $a2 #lw $t2 ($a2) # V1
+  continue1:  lw $t0 ($a0) # Result Vector (R0)
+              lw $t1 ($a1) # V0
+              lw $t2 ($a2) # V1
 
               li $t6 0 # COUNTER FOR LOOP (i)
               li $t7 4 # OFFSET TO ITERATE THROUGH THE ARRAY
@@ -54,8 +58,8 @@
               li $a0 -1
               jr $ra
 
-   continue2: add $t0 $0 $a1 #lw $t0 ($a1) # V0
-              add $t1 $0 $a2 #lw $t1 ($a2) # V1
+   continue2: lw $t0 ($a1) # V0
+              lw $t1 ($a2) # V1
 
               li $t4 0 # COUNTER FOR LOOP (i)
               li $t5 4 # OFFSET TO ITERATE THROUGH THE ARRAY
@@ -90,8 +94,13 @@ addv_1_test1: li $s0 100 # LOOP LIMIT
 
         for3: bge $s1 $s0 end3
 
-              sub $sp $sp $s3 # Stack
+              sub $sp $sp $s3
               sw $ra ($sp)
+
+              la $a0 R0
+              la $a1 V0
+              la $a2 V1
+              li $a3 10
 
               jal addv_1
 
