@@ -1,82 +1,90 @@
-.data
+# -----------------------------------------------------------------------------
+# vectorial_1_mp.txt
+#
+# Lab assignment 2: Microprogramming Lab
+# Implementation of subroutines addv_1 and seqv_1
+#
+# @author Guillermo Escobero & Raul Olmedo
+# @date November 2016
+# -----------------------------------------------------------------------------
 
-    ROK: .word 2, 3, 4, 5, 6, 2, 3, 4, 5, 6
-    R0:  .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    V0:  .word 1, 2, 3, 4, 5, 1, 2, 3, 4, 5
-    V1:  .word 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-
-      main:
-              la $a0 R0
-              la $a1 V0
-              la $a2 V1
-              li $a3 10
-              
-              jal addv_1
-              jal seqv_1
-
-              b finish
-
-     addv_1:  bge $a3 $0 continue1
+# -----------------------------------------------------------------------------
+# Adds two vectors with the same number of elements and store the resulting
+# vector in the memory.
+#
+# @param Memory address where will be stored the resulting vector
+# @param Memory address of the first vector
+# @param Memory address of the second vector
+# @param Number of elements of the vectors
+# -----------------------------------------------------------------------------
+      addv_1: bge $a3 $0 continue
               li $a0 -1
               jr $ra
 
-  continue1:  add $t0 $0 $a0 #lw $t0 ($a0) # Result Vector (R0)
-              add $t1 $0 $a1 #lw $t1 ($a1) # V0
-              add $t2 $0 $a2 #lw $t2 ($a2) # V1
+    continue: add $t0 $0 $a0  #lw $t0 ($a0) # Result Vector (R0)
+              add $t1 $0 $a1  #lw $t1 ($a1) # V0
+              add $t2 $0 $a2  #lw $t2 ($a2) # V1
 
-              li $t6 0 # COUNTER FOR LOOP (i)
-              li $t7 4 # OFFSET TO ITERATE THROUGH THE ARRAY
-              li $t8 1 # STEP TO BE ADDED TO THE COUNTER EACH ITERATION
+              li $t6 0        # Counter for loop (i)
+              li $t7 4        # Offset to iterate through the array
+              li $t8 1        # Step for the counter
 
-       for1:  bge $t6 $a3 end1
+         for: bge $t6 $a3 end
 
-              lw $t3 ($t0) # R0[x]
-              lw $t4 ($t1) # V0[x]
-              lw $t5 ($t2) # V1[x]
+              lw $t3 ($t0)    # R0[x]
+              lw $t4 ($t1)    # V0[x]
+              lw $t5 ($t2)    # V1[x]
 
-              add $t3 $t4 $t5 # R0[x] = V0[x]+V1[x]
+              add $t3 $t4 $t5 # V0[x] + V1[x]
 
-              sw $t3 ($t0)
+              sw $t3 ($t0)    # R0[x] = V0[x] + V1[x]
 
               add $t0 $t0 $t7 # R0[x+1]
               add $t1 $t1 $t7 # V0[x+1]
               add $t2 $t2 $t7 # V1[x+1]
 
-              add $t6 $t6 $t8 #i++
+              add $t6 $t6 $t8 # i++
 
-              b for1
+              b for           # Go to check condition of the loop again
 
-        end1: jr $ra
+         end: jr $ra
 
+# -----------------------------------------------------------------------------
+# Compares two vectors with the same number of elements. If they are equal, '1'
+# is stored in the first register ($a0), if not, '0' is stored.
+#
+# @param Register that will contain the result of the comparison ($a0)
+# @param Memory address of the first vector
+# @param Memory address of the second vector
+# @param Number of elements of the vectors
+# -----------------------------------------------------------------------------
       seqv_1: bge $a3 $0 continue2
               li $a0 -1
               jr $ra
 
-   continue2: add $t0 $0 $a1 #lw $t0 ($a1) # V0
-              add $t1 $0 $a2 #lw $t1 ($a2) # V1
+   continue2: add $t0 $0 $a1    #lw $t0 ($a1) # V0
+              add $t1 $0 $a2    #lw $t1 ($a2) # V1
 
-              li $t4 0 # COUNTER FOR LOOP (i)
-              li $t5 4 # OFFSET TO ITERATE THROUGH THE ARRAY
-              li $t6 1 # STEP TO BE ADDED TO THE COUNTER EACH ITERATION
+              li $t4 0          # Counter for loop (i)
+              li $t5 4          # Offset to iterate through the array
+              li $t6 1          # Step for the counter
 
-        for2: bge $t4 $a3 end2
+        for2: bge $t4 $a3 end2  # Loop condition (i < len(vector))
 
-              lw $t2 ($t0) # V0[x]
-              lw $t3 ($t1) # V1[x]
+              lw $t2 ($t0)      # V0[x]
+              lw $t3 ($t1)      # V1[x]
 
-              bne $t2 $t3 else2
+              bne $t2 $t3 else2 # if(V0[x] == V1[x])
 
-              add $t0 $t0 $t5 # V0[x+1]
-              add $t1 $t1 $t5 # V1[x+1]
+              add $t0 $t0 $t5   # V0[x+1]
+              add $t1 $t1 $t5   # V1[x+1]
 
-              add $t4 $t4 $t6 #i++
+              add $t4 $t4 $t6   # i++
 
-              b for2
+              b for2            # Go to check condition of the loop again
 
-        end2: li $a0 1
+        end2: li $a0 1          # Return 1
               jr $ra
 
-       else2: li $a0 0
+       else2: li $a0 0          # Return 0
               jr $ra
-      finish:
-      

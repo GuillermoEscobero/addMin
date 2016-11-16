@@ -457,6 +457,15 @@ nop {
 }
 
 # TODO: addv_2
+#addv_2 $r1 $r2 $r3 $r4:
+#This instruction adds the values contained in the vectors pointed by the starting
+#addresses contained in registers $r2 and $r3, and stores the result in the vector whose
+#starting address is given in register $r1. The number of the vector’s elements is
+#indicated in the register $ r4 as an integer value. If the number of elements is negative a
+#-1 value is stored in register $ r1 as an error code.
+addv_2 reg reg reg reg {
+  
+}
 
 # TODO: seqv_2
 
