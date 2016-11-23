@@ -30,4 +30,4 @@ addv_1_test1: li $s0 100      # Loop limit
               add $s1 $s1 $s2 # i++
 
               b for           # Go to check condition of the loop again
-         end: jr $ra
+         end: jr $ra          # return
