@@ -463,8 +463,24 @@ nop {
 #starting address is given in register $r1. The number of the vector’s elements is
 #indicated in the register $ r4 as an integer value. If the number of elements is negative a
 #-1 value is stored in register $ r1 as an error code.
-addv_2 reg reg reg reg {
-  
+addv_2 reg1 reg2 reg3 reg4 {
+  co=011000,
+  nwords=1,
+  reg1=reg(25,21),
+  reg2=reg(20,16),
+  reg3=reg(15,11),
+  reg4=reg(10,6),
+  {
+    (T8, C5),
+    (SELA=00110, MR=0, T9, C4),
+    (SELCOP=1011, MC=1, RB=00000, MB=0, SELP=11, M7=1, C7),
+    (A0=0, B=0, C=0111, MADDR=break)
+    # COMPARACION
+    break:
+    #(MR=0, SELA=10000, T9, C0),
+    #(Ta, R=1, )
+    #(SELB=01011, T10, )
+  }
 }
 
 # TODO: seqv_2
