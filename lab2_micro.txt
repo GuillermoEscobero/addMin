@@ -476,14 +476,13 @@ addv_2 reg1 reg2 reg3 reg4 {
     (RA=1000, RB=0, MA=0, MB=0, SELCOP=1010, MC=1, T6, RC=1000, LC=1),
 
     #empezamos el procedimiento
-    begin:  (T8=1, C5=1),
-    (SELA=00110, MR=0, T9=1, C4=1),
-    (SELCOP=1011, MC=1, RB=00000, MB=0, SELP=11, M7=1, C7=1),
+    (T8=1, C5=1),
+    (SELA=00110, MR=0, MA=0, SELCOP=1011, MC=1, RB=00000, MB=0, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0111, MADDR=error),
 
     #FIX: comparar el contador con el tamaño de los arrays
-    (T8=1, C5=1),
-    (SELA=00110, MR=0, MA=0, RB=1000, MB=0, SELCOP=1011, MC=1, RB=1000, MB=0, T6, M7=0, C7),
+    begin:
+    (SELA=00110, MR=0, MA=0, SELCOP=1011, MC=1, RB=01000, MB=0, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0110, MADDR=break),
 
     #load words
