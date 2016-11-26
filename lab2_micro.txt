@@ -481,10 +481,10 @@ addv_2 reg1 reg2 reg3 reg4 {
     (SELCOP=1011, MC=1, RB=00000, MB=0, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0111, MADDR=error),
 
-    #CHECK: comparar el contador con el tamaño de los arrays
+    #FIX: comparar el contador con el tamaño de los arrays
     (T8=1, C5=1),
     (SELA=00110, MR=0, MA=0, RB=1000, MB=0, SELCOP=1011, MC=1, RB=1000, MB=0, T6, M7=0, C7),
-    (A0=0, B=0, C=1001, MADDR=break),
+    (A0=0, B=0, C=0110, MADDR=break),
 
     #load words
     (MR=0, SELA=10000, T9=1, C0),
@@ -507,12 +507,11 @@ addv_2 reg1 reg2 reg3 reg4 {
     (T7=1, M1=0, C1=1),
     (BW=11, TA=1, TD=1, W=1),
 
-    #FIX: incrementar las direcciones de memoria y volver a empezar
-    (SELA=10101, MR=0, MA=0, MB=10, SELCOP=1010, C6),
-    (T7=1, SELC=10101, MR=0, LC=1),
-    (SELA=10000, MR=0, MA=0, MB=10, SELCOP=1010, T6, SELC=10000, MR=0, LC=1),
-    (SELA=01011, MR=0, MA=0, MB=10, SELCOP=1010, T6, SELC=01011, MR=0, LC=1),
-    (RA=1000, MA=0, MB=11, SELCOP=1010, T6, SELC=1000, MR=0, LC=1),
+    #incrementar las direcciones de memoria y volver a empezar
+    (MC=1, MR=0, SELA=10101, MA=0, MB=10, SELCOP=1010, T6, SELC=10101, LC=1, SELP=11, M7, C7),
+    (MC=1, MR=0, SELA=10000, MA=0, MB=10, SELCOP=1010, T6, SELC=10000, LC=1, SELP=11, M7, C7),
+    (MC=1, MR=0, SELA=01011, MA=0, MB=10, SELCOP=1010, T6, SELC=01011, LC=1, SELP=11, M7, C7),
+    (MC=1, RA=1000, MA=0, MB=11, SELCOP=1010, T6, SELC=01000, MR=1, LC=1, SELP=11, M7, C7),
     (A0=0, B=1, C=0, MADDR=begin),
 
 
