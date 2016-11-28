@@ -535,6 +535,27 @@ seqv_2 reg1 reg2 reg3 reg4 {
   reg3=reg(15,11), #V1
   reg4=reg(10,6), #number
   {
+    #To begin, we save the registers reg1, reg2 and reg3 into the stack to preserve the values once the microprogramhas ended
+    #paso1: restar al sp 4
+    (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1011, MC=1, T6, SELC=11101, LC=1),
+
+    #paso2: meter en la direccion de memoria existente en sp el valor que quiero preservar
+    (SELA=11101, MR=1, T9, C0),
+    (SELB=10101, MR=0, T9, M1=0, C1),
+    (BW=11, TA=1, TD=1, W=1),
+
+    (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1011, MC=1, T6, SELC=11101, LC=1),
+
+    (SELA=11101, MR=1, T9, C0),
+    (SELB=10000, MR=0, T9, M1=0, C1),
+    (BW=11, TA=1, TD=1, W=1),
+
+    (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1011, MC=1, T6, SELC=11101, LC=1),
+
+    (SELA=11101, MR=1, T9, C0),
+    (SELB=01011, MR=0, T9, M1=0, C1),
+    (BW=11, TA=1, TD=1, W=1),
+
     #We start the procedure comparing the number of elements, if it is negative, go to error1 label
     (T8=1, C5=1),
     (SELB=00000, MR=1, T10=1, C5),
@@ -565,7 +586,7 @@ seqv_2 reg1 reg2 reg3 reg4 {
     #we introduce the values in the ALU, we operate using the XOR, then it checks if it is 0 (if it is different it goes to label different)
     (MA=1, MB=1, SELCOP=0100, MC=1, SELP=11, M7, C7),
     (A0=0, B=1, C=0110, MADDR=different),
-    
+
     #Move the value of RT3 to RT1 (counter)
     (T7, C4),
 
@@ -589,12 +610,36 @@ seqv_2 reg1 reg2 reg3 reg4 {
     different:
     (SELA=00000, MR=1, T9, C5),
     (SELC=10101, MR=0, T5, LC),
-    (A0=1, B=1, C=0),
+    (A0=0, B=1, C=0, MADDR=restore2),
 
     #sets reg1 to 1 (since all the elements are equal) and sets A0, B and C to jump to fetch to end the microprogram
     end2:
     (SELA=00000, MR=1, MA=0, MB=11, SELCOP=1010, MC=1, C6),
     (SELC=10101, MR=0, T7, LC),
+    (A0=0, B=1, C=0, MADDR=restore2),
+
+    restore2:
+    #paso 1 sacar ek valor
+    (SELA=11101, MR=0, T9, C0),
+    (TA=1, R=1, BW=11, M1=1, C1),
+    (SELC=01011, MR=1, T1, LC),
+
+    #paso 2 sumar 4 al sp
+    (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1010, MC=1, T6, SELC=11101, LC=1),
+
+    (SELA=11101, MR=0, T9, C0),
+    (TA=1, R=1, BW=11, M1=1, C1),
+    (SELC=10000, MR=1, T1, LC),
+
+    (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1010, MC=1, T6, SELC=11101, LC=1),
+
+    (SELA=11101, MR=0, T9, C0),
+    (TA=1, R=1, BW=11, M1=1, C1),
+    (SELC=10101, MR=1, T1, LC),
+
+    (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1010, MC=1, T6, SELC=11101, LC=1),
+
+
     (A0=1, B=1, C=0)
   }
 }
