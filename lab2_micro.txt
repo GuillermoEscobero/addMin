@@ -471,7 +471,7 @@ addv_2 reg1 reg2 reg3 reg4 {
     (SELA=00110, MR=0, MA=0, MB=1, SELCOP=1011, MC=1, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0111, MADDR=error1),
 
-    #FIX: compare the number in RT1 (counter) to the number of elements in reg4 (given by the user)
+    #compare the number in RT1 (where the counter is set) to the number of elements in reg4 (given by the user)
     begin1:
     (SELB=00110, MR=0, MB=0, MA=1, SELCOP=1011, MC=1, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0110, MADDR=end1),
@@ -486,8 +486,8 @@ addv_2 reg1 reg2 reg3 reg4 {
     #store the first word into RT2
     (T1=1, C5, TA=1, R=1, BW=11, M1=1, C1=1),
 
-    #save the value of RT1 in RT3
-    (SELB=00000, MR=1, SELCOP=1010, MC=1, MA=1, MB=0, C6)
+    #move the value of RT1 into RT3
+    (SELB=00000, MR=1, SELCOP=1010, MC=1, MA=1, MB=0, C6),
 
     #store the second word into RT1
     (T1=1, C4),
@@ -535,17 +535,15 @@ seqv_2 reg1 reg2 reg3 reg4 {
   reg3=reg(15,11), #V1
   reg4=reg(10,6), #number
   {
-    #We set a counter in register 8 (t0)
-    (RA=1000, RB=0, MA=0, MB=0, SELCOP=1010, MC=1, T6, RC=1000, LC=1),
-
-    #We start the procedure comparing the number of elements, if it is negative, go to error2 label
+    #We start the procedure comparing the number of elements, if it is negative, go to error1 label
     (T8=1, C5=1),
-    (SELA=00110, MR=0, MA=0, SELCOP=1011, MC=1, RB=00000, MB=0, SELP=11, M7=1, C7=1),
+    (SELB=00000, MR=1, T10=1, C5),
+    (SELA=00110, MR=0, MA=0, MB=1, SELCOP=1011, MC=1, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0111, MADDR=error2),
 
-    #compare the number in register 8 (counter) to the number of elements in reg4 (given by the user)
+    #compare the number in RT1 (where the counter is set) to the number of elements in reg4 (given by the user)
     begin2:
-    (SELA=00110, MR=0, MA=0, SELCOP=1011, MC=1, RB=01000, MB=0, SELP=11, M7=1, C7=1),
+    (SELB=00110, MR=0, MB=0, MA=1, SELCOP=1011, MC=1, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0110, MADDR=end2),
 
     #start loading the first word in the reg2
@@ -555,14 +553,21 @@ seqv_2 reg1 reg2 reg3 reg4 {
     #we start retrieving the second word, in reg3
     (MR=0, SELB=01011, T10=1, C0),
 
-    #store the first word into RT1
-    (T1=1, C4, TA=1, R=1, BW=11, M1=1, C1=1),
+    #store the first word into RT2
+    (T1=1, C5, TA=1, R=1, BW=11, M1=1, C1=1),
 
-    #store the second word into RT2
-    (T1=1, C5),
+    #move the value of RT1 into RT3
+    (SELB=00000, MR=1, SELCOP=1010, MC=1, MA=1, MB=0, C6),
+
+    #store the second word into RT1
+    (T1=1, C4),
 
     #we introduce the values in the ALU, we operate using the XOR, then it checks if it is 0 (if it is different it goes to label different)
-    (MA=1, MB=1, SELCOP=0100, MC=1, SELP=11, M7, C7, A0=0, B=1, C=0110, MADDR=different),
+    (MA=1, MB=1, SELCOP=0100, MC=1, SELP=11, M7, C7),
+    (A0=0, B=1, C=0110, MADDR=different),
+    
+    #Move the value of RT3 to RT1 (counter)
+    (T7, C4),
 
     #increment the memory address of reg1, reg2 and reg3
     (MC=1, MR=0, SELA=10101, MA=0, MB=10, SELCOP=1010, T6, SELC=10101, LC=1, SELP=11, M7, C7),
@@ -570,7 +575,7 @@ seqv_2 reg1 reg2 reg3 reg4 {
     (MC=1, MR=0, SELA=01011, MA=0, MB=10, SELCOP=1010, T6, SELC=01011, LC=1, SELP=11, M7, C7),
 
     #increment the counter by 1
-    (MC=1, RA=1000, MA=0, MB=11, SELCOP=1010, T6, SELC=01000, MR=1, LC=1, SELP=11, M7, C7),
+    (MA=1, MB=11, SELCOP=1010, MC=1, T6, C4),
 
     #go to the label begin2 and start again the process
     (A0=0, B=1, C=0, MADDR=begin2),
@@ -580,14 +585,16 @@ seqv_2 reg1 reg2 reg3 reg4 {
     (MC=1, RA=0, MA=0, MB=11, SELCOP=1011, T6, SELC=10101, LC=1),
     (A0=0, B=1, C=0, MADDR=end2),
 
-    #if during the process a different number is detected, this label is reached, setting reg1 to 0 and going to end2 label
+    #if during the process a different number is detected, this label is reached, setting reg1 to 0 and going to fetch to end the microprogram
     different:
-    (MC=1, MR=0, SELA=10101, RB=0, MA=0, MB=0, SELCOP=1100, T6, SELC=10101, LC=1),
+    (SELA=00000, MR=1, T9, C5),
+    (SELC=10101, MR=0, T5, LC),
     (A0=1, B=1, C=0),
 
-    #sets A0, B and C to jump to fetch to end the microprogram
+    #sets reg1 to 1 (since all the elements are equal) and sets A0, B and C to jump to fetch to end the microprogram
     end2:
-    (MC=1, MR=0, RA=0, MA=0, MB=11, SELCOP=1010, T6, SELC=10101, LC=1),
+    (SELA=00000, MR=1, MA=0, MB=11, SELCOP=1010, MC=1, C6),
+    (SELC=10101, MR=0, T7, LC),
     (A0=1, B=1, C=0)
   }
 }
