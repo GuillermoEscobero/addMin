@@ -10,6 +10,7 @@
 
     main:
       jal addv_2_test1
+      b finish
 
 
 addv_2_test1: li $s0 100      # Loop limit
@@ -35,5 +36,7 @@ addv_2_test1: li $s0 100      # Loop limit
               add $s1 $s1 $s2 # i++
 
               b for           # Go to check condition of the loop again
-              
+
          end: jr $ra          # return
+
+         finish:
