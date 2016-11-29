@@ -1,0 +1,33 @@
+# -----------------------------------------------------------------------------
+# vectorial_2_mp_test1.txt
+#
+# Lab assignment 2: Microprogramming Lab
+# Implementation of the subroutine 'addv_2_test1' in charge of running tests
+# of addv_1.
+#
+# @author Guillermo Escobero & Raul Olmedo
+# @date November 2016
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Invokes 100 times the addv_2 subroutine for testing purposes.
+# -----------------------------------------------------------------------------
+addv_2_test1: li $s0 100      # Loop limit
+              li $s1 0        # Counter for loop (i)
+              li $s2 1        # Step for the counter
+              li $s3 4        # Offset to iterate through the array
+
+         for: bge $s1 $s0 end # Loop condition (i<100)
+
+              sub $sp $sp $s3 # Stack PUSH
+              sw $ra ($sp)
+
+              jal addv_2      # Calls subroutine addv_1
+
+              lw $ra ($sp)    # Stack POP
+              add $sp $sp $s3
+
+              add $s1 $s1 $s2 # i++
+
+              b for           # Go to check condition of the loop again
+         end: jr $ra          # return
