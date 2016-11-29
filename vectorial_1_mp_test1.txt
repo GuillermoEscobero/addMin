@@ -17,6 +17,11 @@ addv_1_test1: li $s0 100      # Loop limit
               li $s2 1        # Step for the counter
               li $s3 4        # Offset to iterate through the array
 
+              la $a0 R0
+              la $a1 R1
+              la $a2 V1
+              la $a3 10
+
          for: bge $s1 $s0 end # Loop condition (i<100)
 
               sub $sp $sp $s3 # Stack PUSH

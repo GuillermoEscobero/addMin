@@ -3,7 +3,7 @@
 #
 # Lab assignment 2: Microprogramming Lab
 # Implementation of the subroutine 'addv_2_test1' in charge of running tests
-# of addv_1.
+# of addv_2.
 #
 # @author Guillermo Escobero & Raul Olmedo
 # @date November 2016
