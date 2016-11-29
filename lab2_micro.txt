@@ -541,20 +541,22 @@ seqv_2 reg1 reg2 reg3 reg4 {
 
     #paso2: meter en la direccion de memoria existente en sp el valor que quiero preservar
     (SELA=11101, MR=1, T9, C0),
-    (SELB=10101, MR=0, T9, M1=0, C1),
+    (SELB=10101, MR=0, T10, M1=0, C1),
     (BW=11, TA=1, TD=1, W=1),
 
     (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1011, MC=1, T6, SELC=11101, LC=1),
 
     (SELA=11101, MR=1, T9, C0),
-    (SELB=10000, MR=0, T9, M1=0, C1),
+    (SELB=10000, MR=0, T10, M1=0, C1),
     (BW=11, TA=1, TD=1, W=1),
 
     (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1011, MC=1, T6, SELC=11101, LC=1),
 
     (SELA=11101, MR=1, T9, C0),
-    (SELB=01011, MR=0, T9, M1=0, C1),
+    (SELB=01011, MR=0, T10, M1=0, C1),
     (BW=11, TA=1, TD=1, W=1),
+
+    #TODO: RESETEAR EL RT1 A 0 PARA EVITAR PROBLEMAS?
 
     #We start the procedure comparing the number of elements, if it is negative, go to error1 label
     (T8=1, C5=1),
@@ -620,22 +622,22 @@ seqv_2 reg1 reg2 reg3 reg4 {
 
     restore2:
     #paso 1 sacar ek valor
-    (SELA=11101, MR=0, T9, C0),
+    (SELA=11101, MR=1, T9, C0),
     (TA=1, R=1, BW=11, M1=1, C1),
-    (SELC=01011, MR=1, T1, LC),
+    (SELC=01011, MR=0, T1, LC),
 
     #paso 2 sumar 4 al sp
     (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1010, MC=1, T6, SELC=11101, LC=1),
 
-    (SELA=11101, MR=0, T9, C0),
+    (SELA=11101, MR=1, T9, C0),
     (TA=1, R=1, BW=11, M1=1, C1),
-    (SELC=10000, MR=1, T1, LC),
+    (SELC=10000, MR=0, T1, LC),
 
     (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1010, MC=1, T6, SELC=11101, LC=1),
 
-    (SELA=11101, MR=0, T9, C0),
+    (SELA=11101, MR=1, T9, C0),
     (TA=1, R=1, BW=11, M1=1, C1),
-    (SELC=10101, MR=1, T1, LC),
+    (SELC=10101, MR=0, T1, LC),
 
     (SELA=11101, MR=1, MA=0, MB=10, SELCOP=1010, MC=1, T6, SELC=11101, LC=1),
 
