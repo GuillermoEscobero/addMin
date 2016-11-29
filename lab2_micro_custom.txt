@@ -485,7 +485,6 @@ addv_2 reg1 reg2 reg3 reg4 {
     (SELB=01011, MR=0, T10, M1=0, C1),
     (BW=11, TA=1, TD=1, W=1),
 
-    #TODO: RESETEAR EL RT1 A 0 PARA EVITAR PROBLEMAS?
     (SELA=0000, MR=1, T9, C4),
 
     #We start the procedure comparing the number of elements, if it is negative, go to error1 label
@@ -598,7 +597,6 @@ seqv_2 reg1 reg2 reg3 reg4 {
     (SELB=01011, MR=0, T10, M1=0, C1),
     (BW=11, TA=1, TD=1, W=1),
 
-    #TODO: RESETEAR EL RT1 A 0 PARA EVITAR PROBLEMAS?
     (SELA=0000, MR=1, T9, C4),
 
     #We start the procedure comparing the number of elements, if it is negative, go to error1 label
