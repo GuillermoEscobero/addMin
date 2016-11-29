@@ -66,9 +66,9 @@ addv_2 reg1 reg2 reg3 reg4 {
     (BW=11, TA=1, TD=1, W=1),
 
     #increment the memory address of reg1, reg2 and reg3
-    (MC=1, MR=0, SELA=10101, MA=0, MB=10, SELCOP=1010, T6, SELC=10101, LC=1, SELP=11, M7, C7),
-    (MC=1, MR=0, SELA=10000, MA=0, MB=10, SELCOP=1010, T6, SELC=10000, LC=1, SELP=11, M7, C7),
-    (MC=1, MR=0, SELA=01011, MA=0, MB=10, SELCOP=1010, T6, SELC=01011, LC=1, SELP=11, M7, C7),
+    (MC=1, MR=0, SELA=10101, MA=0, MB=10, SELCOP=1010, T6, SELC=10101, LC=1),
+    (MC=1, MR=0, SELA=10000, MA=0, MB=10, SELCOP=1010, T6, SELC=10000, LC=1),
+    (MC=1, MR=0, SELA=01011, MA=0, MB=10, SELCOP=1010, T6, SELC=01011, LC=1),
 
     #increment the counter by 1
     (MA=1, MB=11, SELCOP=1010, MC=1, T6, C4),
@@ -107,7 +107,6 @@ addv_2 reg1 reg2 reg3 reg4 {
 
   }
 }
-
 
 seqv_2 reg1 reg2 reg3 reg4 {
   co=011001,
@@ -175,9 +174,9 @@ seqv_2 reg1 reg2 reg3 reg4 {
     (T7, C4),
 
     #increment the memory address of reg1, reg2 and reg3
-    (MC=1, MR=0, SELA=10101, MA=0, MB=10, SELCOP=1010, T6, SELC=10101, LC=1, SELP=11, M7, C7),
-    (MC=1, MR=0, SELA=10000, MA=0, MB=10, SELCOP=1010, T6, SELC=10000, LC=1, SELP=11, M7, C7),
-    (MC=1, MR=0, SELA=01011, MA=0, MB=10, SELCOP=1010, T6, SELC=01011, LC=1, SELP=11, M7, C7),
+    (MC=1, MR=0, SELA=10101, MA=0, MB=10, SELCOP=1010, T6, SELC=10101, LC=1),
+    (MC=1, MR=0, SELA=10000, MA=0, MB=10, SELCOP=1010, T6, SELC=10000, LC=1),
+    (MC=1, MR=0, SELA=01011, MA=0, MB=10, SELCOP=1010, T6, SELC=01011, LC=1),
 
     #increment the counter by 1
     (MA=1, MB=11, SELCOP=1010, MC=1, T6, C4),
