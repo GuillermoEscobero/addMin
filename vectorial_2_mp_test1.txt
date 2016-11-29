@@ -22,7 +22,11 @@ addv_2_test1: li $s0 100      # Loop limit
               sub $sp $sp $s3 # Stack PUSH
               sw $ra ($sp)
 
-              jal addv_2      # Calls subroutine addv_1
+              la $t0 R0
+              la $t1 V0
+              la $t2 V1
+              li $t3 10
+              addv_2 $t0 $t1 $t2 $t3
 
               lw $ra ($sp)    # Stack POP
               add $sp $sp $s3
