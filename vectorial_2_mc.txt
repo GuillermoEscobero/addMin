@@ -33,6 +33,9 @@ addv_2 reg1 reg2 reg3 reg4 {
     (SELA=00110, MR=0, MA=0, MB=1, SELCOP=1011, MC=1, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0111, MADDR=error1),
 
+    #TODO: RESETEAR EL RT1 A 0 PARA EVITAR PROBLEMAS?
+    (SELA=0000, MR=1, T9, C4),
+
     #compare the number in RT1 (where the counter is set) to the number of elements in reg4 (given by the user)
     begin1:
     (SELB=00110, MR=0, MB=0, MA=1, SELCOP=1011, MC=1, SELP=11, M7=1, C7=1),
@@ -138,6 +141,7 @@ seqv_2 reg1 reg2 reg3 reg4 {
     (BW=11, TA=1, TD=1, W=1),
 
     #TODO: RESETEAR EL RT1 A 0 PARA EVITAR PROBLEMAS?
+    (SELA=0000, MR=1, T9, C4),
 
     #We start the procedure comparing the number of elements, if it is negative, go to error1 label
     (T8=1, C5=1),
