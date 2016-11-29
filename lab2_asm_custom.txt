@@ -1,0 +1,39 @@
+.data
+
+    ROK: .word 2, 3, 4, 5, 6, 2, 3, 4, 5, 6
+    R0:  .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    V0:  .word 1, 2, 3, 4, 5, 1, 2, 3, 4, 5
+    V1:  .word 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+
+
+.text
+
+    main:
+      jal addv_2_test1
+
+
+addv_2_test1: li $s0 100      # Loop limit
+              li $s1 0        # Counter for loop (i)
+              li $s2 1        # Step for the counter
+              li $s3 4        # Offset to iterate through the array
+
+         for: bge $s1 $s0 end # Loop condition (i<100)
+
+              sub $sp $sp $s3 # Stack PUSH
+              sw $ra ($sp)
+
+              la $t0 R0
+              la $t1 V0
+              la $t2 V1
+              li $t3 10
+
+              addv_2 $t0 $t1 $t2 $t3
+
+              lw $ra ($sp)    # Stack POP
+              add $sp $sp $s3
+
+              add $s1 $s1 $s2 # i++
+
+              b for           # Go to check condition of the loop again
+              
+         end: jr $ra          # return
