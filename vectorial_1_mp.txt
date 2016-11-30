@@ -9,8 +9,11 @@
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# Adds two vectors with the same number of elements and store the resulting
+# Adds two vectors with the same number of elements and stores the resulting
 # vector in the memory.
+#
+# Returns -1 in the first register if the number of elements provided is not
+# correct.
 #
 # @param Memory address where will be stored the resulting vector
 # @param Memory address of the first vector
@@ -21,9 +24,9 @@
               li $a0 -1           #   return -1;
               jr $ra
 
-    continue: add $t0 $0 $a0      #lw $t0 ($a0) # Result Vector (R0)
-              add $t1 $0 $a1      #lw $t1 ($a1) # V0
-              add $t2 $0 $a2      #lw $t2 ($a2) # V1
+    continue: add $t0 $0 $a0      # lw $t0 ($a0) # Result Vector (R0)
+              add $t1 $0 $a1      # lw $t1 ($a1) # V0
+              add $t2 $0 $a2      # lw $t2 ($a2) # V1
 
               li $t6 0            # Counter for loop (i)
               li $t7 4            # Offset to iterate through the array
@@ -53,6 +56,9 @@
 # Compares two vectors with the same number of elements. If they are equal, '1'
 # is stored in the first register ($a0), if not, '0' is stored.
 #
+# Returns -1 in the first register if the number of elements provided is not
+# correct.
+#
 # @param Register that will contain the result of the comparison ($a0)
 # @param Memory address of the first vector
 # @param Memory address of the second vector
@@ -62,8 +68,8 @@
               li $a0 -1            #   return -1;
               jr $ra
 
-   continue2: add $t0 $0 $a1       #lw $t0 ($a1) # V0
-              add $t1 $0 $a2       #lw $t1 ($a2) # V1
+   continue2: add $t0 $0 $a1       # lw $t0 ($a1) # V0
+              add $t1 $0 $a2       # lw $t1 ($a2) # V1
 
               li $t4 0             # Counter for loop (i)
               li $t5 4             # Offset to iterate through the array

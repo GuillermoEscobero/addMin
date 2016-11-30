@@ -1,3 +1,25 @@
+# -----------------------------------------------------------------------------
+# vectorial_2_mc.txt
+#
+# Lab assignment 2: Microprogramming Lab
+# Implementation of subroutines addv_2 and seqv_2
+#
+# @author Guillermo Escobero & Raul Olmedo
+# @date November 2016
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Adds two vectors with the same number of elements and stores the resulting
+# vector in the memory.
+#
+# Returns -1 in the first register if the number of elements provided is not
+# correct.
+#
+# @param Register with the memory address where will be stored the resulting vector
+# @param Register with the memory address of the first vector
+# @param Register with the memory address of the second vector
+# @param Register with the number of elements of the vectors
+# -----------------------------------------------------------------------------
 addv_2 reg1 reg2 reg3 reg4 {
   co=011000,
   nwords=1,
@@ -110,6 +132,18 @@ addv_2 reg1 reg2 reg3 reg4 {
   }
 }
 
+# -----------------------------------------------------------------------------
+# Compares two vectors with the same number of elements and returns 1 in the
+# first register if the vectors are equal, or 0 if are different.
+#
+# Returns -1 in the first register if the number of elements provided is not
+# correct.
+#
+# @param Register where will be stored the result (0 or 1)
+# @param Register with the memory address of the first vector
+# @param Register with the memory address of the second vector
+# @param Register with the number of elements of the vectors
+# -----------------------------------------------------------------------------
 seqv_2 reg1 reg2 reg3 reg4 {
   co=011001,
   nwords=1,
