@@ -100,8 +100,9 @@ addv_2 reg1 reg2 reg3 reg4 {
     #go to the label begin1 and start again the process
     (A0=0, B=1, C=0, MADDR=begin1),
 
-    #label reached when the size of the arrays given in reg4 is negative, it stores a -1 in reg1 and goes to label end1
+    #label reached when the size of the arrays given in reg4 is negative, it stores a -1 in reg1 and goes to label restore1
     error1:
+    #TODO change RA to SELA...
     (MC=1, RA=0, MA=0, MB=11, SELCOP=1011, T6, SELC=10101, LC=1),
     (A0=0, B=1, C=0, MADDR=restore1),
 
@@ -180,6 +181,8 @@ seqv_2 reg1 reg2 reg3 reg4 {
     (SELB=00000, MR=1, T10=1, C5),
     (SELA=00110, MR=0, MA=0, MB=1, SELCOP=1011, MC=1, SELP=11, M7=1, C7=1),
     (A0=0, B=0, C=0111, MADDR=error2),
+
+    (SELA=0000, MR=1, T9, C4),
 
     #compare the number in RT1 (where the counter is set) to the number of elements in reg4 (given by the user)
     begin2:
