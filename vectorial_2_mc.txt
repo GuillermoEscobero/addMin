@@ -102,7 +102,6 @@ addv_2 reg1 reg2 reg3 reg4 {
 
     #label reached when the size of the arrays given in reg4 is negative, it stores a -1 in reg1 and goes to label restore1
     error1:
-    #TODO change RA to SELA...
     (MC=1, RA=0, MA=0, MB=11, SELCOP=1011, T6, SELC=10101, LC=1),
     (A0=0, B=1, C=0, MADDR=restore1),
 
