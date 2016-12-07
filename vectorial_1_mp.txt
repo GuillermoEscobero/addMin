@@ -2,7 +2,7 @@
 # vectorial_1_mp.txt
 #
 # Lab assignment 2: Microprogramming Lab
-# Implementation of subroutines addv_1 and seqv_1
+# Implementation of subroutines addv_1 and seqv_1.
 #
 # @author Guillermo Escobero & Raul Olmedo
 # @date November 2016
@@ -24,9 +24,9 @@
               li $a0 -1           #   return -1;
               jr $ra
 
-    continue: add $t0 $0 $a0      # lw $t0 ($a0) # Result Vector (R0)
-              add $t1 $0 $a1      # lw $t1 ($a1) # V0
-              add $t2 $0 $a2      # lw $t2 ($a2) # V1
+    continue: add $t0 $0 $a0      # move $t0 $a0 # Result Vector (R0)
+              add $t1 $0 $a1      # move $t1 $a1 # V0
+              add $t2 $0 $a2      # move $t2 $a2 # V1
 
               li $t6 0            # Counter for loop (i)
               li $t7 4            # Offset to iterate through the array
@@ -68,8 +68,8 @@
               li $a0 -1            #   return -1;
               jr $ra
 
-   continue2: add $t0 $0 $a1       # lw $t0 ($a1) # V0
-              add $t1 $0 $a2       # lw $t1 ($a2) # V1
+   continue2: add $t0 $0 $a1       # move $t0 $a1 # V0
+              add $t1 $0 $a2       # move $t1 $a2 # V1
 
               li $t4 0             # Counter for loop (i)
               li $t5 4             # Offset to iterate through the array

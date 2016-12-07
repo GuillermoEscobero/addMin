@@ -24,6 +24,8 @@ addv_1_test1: li $s0 100      # Loop limit
 
          for: bge $s1 $s0 end # Loop condition (i<100)
 
+              # Use of stack needed to keep the correct value of $ra through
+              # succesive iterations.
               sub $sp $sp $s3 # Stack PUSH
               sw $ra ($sp)
 
@@ -35,4 +37,5 @@ addv_1_test1: li $s0 100      # Loop limit
               add $s1 $s1 $s2 # i++
 
               b for           # Go to check condition of the loop again
+              
          end: jr $ra          # return

@@ -2,8 +2,8 @@
 # vectorial_2_mp_test1.txt
 #
 # Lab assignment 2: Microprogramming Lab
-# Implementation of the subroutine 'addv_2_test1' in charge of running tests
-# of addv_2.
+# Implementation of the subroutine 'addv_2_test1' in order to test addv_2
+# subroutine.
 #
 # @author Guillermo Escobero & Raul Olmedo
 # @date November 2016
@@ -26,7 +26,7 @@ addv_2_test1: li $s0 100      # Loop limit
               la $t1 V0
               la $t2 V1
               li $t3 10
-              
+
               addv_2 $t0 $t1 $t2 $t3
 
               lw $ra ($sp)    # Stack POP
@@ -35,4 +35,5 @@ addv_2_test1: li $s0 100      # Loop limit
               add $s1 $s1 $s2 # i++
 
               b for           # Go to check condition of the loop again
+
          end: jr $ra          # return
