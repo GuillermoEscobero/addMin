@@ -22,20 +22,18 @@ addv_1_test1: li $s0 100      # Loop limit
               la $a2 V1
               la $a3 10
 
-         for: bge $s1 $s0 end # Loop condition (i<100)
-
-              # Use of stack needed to keep the correct value of $ra through
-              # succesive iterations.
+              # Use of stack needed to keep the value of $ra.
               sub $sp $sp $s3 # Stack PUSH
               sw $ra ($sp)
 
-              jal addv_1      # Calls subroutine addv_1
+         for: bge $s1 $s0 end # Loop condition (i<100)
 
-              lw $ra ($sp)    # Stack POP
-              add $sp $sp $s3
+              jal addv_1      # Calls subroutine addv_1
 
               add $s1 $s1 $s2 # i++
 
               b for           # Go to check condition of the loop again
-              
-         end: jr $ra          # return
+
+         end: lw $ra ($sp)    # Stack POP
+              add $sp $sp $s3
+              jr $ra          # return
