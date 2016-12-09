@@ -13,30 +13,31 @@
       b finish
 
 
-addv_2_test1: li $s0 100      # Loop limit
-              li $s1 0        # Counter for loop (i)
-              li $s2 1        # Step for the counter
-              li $s3 4        # Offset to iterate through the array
+      addv_2_test1: li $s0 100      # Loop limit
+                    li $s1 0        # Counter for loop (i)
+                    li $s2 1        # Step for the counter
+                    li $s3 4        # Offset to iterate through the array
 
-         for: bge $s1 $s0 end # Loop condition (i<100)
+                    # Use of stack needed to keep the value of $ra.
+                    sub $sp $sp $s3 # Stack PUSH
+                    sw $ra ($sp)
 
-              sub $sp $sp $s3 # Stack PUSH
-              sw $ra ($sp)
+                    la $s4 R0
+                    la $s5 V0
+                    la $s6 V1
+                    li $s7 10
 
-              la $t0 R0
-              la $t1 V0
-              la $t2 V1
-              li $t3 10
+               for: bge $s1 $s0 end # Loop condition (i<100)
 
-              addv_2 $t0 $t1 $t2 $t3
+                    addv_2 $s4 $s5 $s6 $s7
 
-              lw $ra ($sp)    # Stack POP
-              add $sp $sp $s3
+                    add $s1 $s1 $s2 # i++
 
-              add $s1 $s1 $s2 # i++
+                    b for           # Go to check condition of the loop again
 
-              b for           # Go to check condition of the loop again
+               end: lw $ra ($sp)    # Stack POP
+                    add $sp $sp $s3
+                    jr $ra          # return
 
-         end: jr $ra          # return
 
          finish:
