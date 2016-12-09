@@ -26,7 +26,7 @@ addv_1_test1: li $s0 100      # Loop limit
               sub $sp $sp $s3 # Stack PUSH
               sw $ra ($sp)
 
-         for: bge $s1 $s0 end # Loop condition (i<100)
+         for2: bge $s1 $s0 end # Loop condition (i<100)
 
               jal addv_1      # Calls subroutine addv_1
 
@@ -34,6 +34,6 @@ addv_1_test1: li $s0 100      # Loop limit
 
               b for           # Go to check condition of the loop again
 
-         end: lw $ra ($sp)    # Stack POP
+         end2: lw $ra ($sp)    # Stack POP
               add $sp $sp $s3
               jr $ra          # return
