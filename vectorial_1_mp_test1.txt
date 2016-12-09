@@ -18,7 +18,7 @@ addv_1_test1: li $s0 100      # Loop limit
               li $s3 4        # Offset to iterate through the array
 
               la $a0 R0
-              la $a1 R1
+              la $a1 V0
               la $a2 V1
               la $a3 10
 
