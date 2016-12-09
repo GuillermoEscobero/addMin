@@ -24,9 +24,9 @@
               li $a0 -1           #   return -1;
               jr $ra
 
-    continue: add $t0 $0 $a0      # move $t0 $a0 # Result Vector (R0)
-              add $t1 $0 $a1      # move $t1 $a1 # V0
-              add $t2 $0 $a2      # move $t2 $a2 # V1
+    continue: mv $t0 $a0          # Result Vector (R0)
+              mv $t1 $a1          # V0
+              mv $t2 $a2          # V1
 
               li $t6 0            # Counter for loop (i)
               li $t7 4            # Offset to iterate through the array
@@ -68,8 +68,8 @@
               li $a0 -1            #   return -1;
               jr $ra
 
-   continue2: add $t0 $0 $a1       # move $t0 $a1 # V0
-              add $t1 $0 $a2       # move $t1 $a2 # V1
+   continue2: mv $t0 $a1           # V0
+              mv $t1 $a2           # V1
 
               li $t4 0             # Counter for loop (i)
               li $t5 4             # Offset to iterate through the array
