@@ -1,0 +1,72 @@
+.data
+
+    ROK: .word 2, 3, 4, 5, 6, 2, 3, 4, 5, 6
+    R0:  .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    V0:  .word 1, 2, 3, 4, 5, 1, 2, 3, 4, 5
+    V1:  .word 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+
+
+.text
+
+    main:
+      jal addv_1_test1
+      b finish
+
+         addv_1_test1: li $s0 100      # Loop limit
+                       li $s1 0        # Counter for loop (i)
+                       li $s2 1        # Step for the counter
+                       li $s3 4        # Offset to iterate through the array
+
+                       la $a0 R0
+                       la $a1 R1
+                       la $a2 V1
+                       la $a3 10
+
+                       # Use of stack needed to keep the value of $ra.
+                       sub $sp $sp $s3 # Stack PUSH
+                       sw $ra ($sp)
+
+                  for: bge $s1 $s0 end # Loop condition (i<100)
+
+                       jal addv_1      # Calls subroutine addv_1
+
+                       add $s1 $s1 $s2 # i++
+
+                       b for           # Go to check condition of the loop again
+
+                  end: lw $ra ($sp)    # Stack POP
+                       add $sp $sp $s3
+                       jr $ra          # return
+
+                       addv_1: bge $a3 $0 continue # if(vectorElements <= 0)
+                               li $a0 -1           #   return -1;
+                               jr $ra
+
+                     continue: mv $t0 $a0          # Result Vector (R0)
+                               mv $t1 $a1          # V0
+                               mv $t2 $a2          # V1
+
+                               li $t6 0            # Counter for loop (i)
+                               li $t7 4            # Offset to iterate through the array
+                               li $t8 1            # Step for the counter
+
+                          for2: bge $t6 $a3 end2    # Loop condition (i < len(vector))
+
+                               lw $t3 ($t0)        # R0[x]
+                               lw $t4 ($t1)        # V0[x]
+                               lw $t5 ($t2)        # V1[x]
+
+                               add $t3 $t4 $t5     # V0[x] + V1[x]
+
+                               sw $t3 ($t0)        # R0[x] = V0[x] + V1[x]
+
+                               add $t0 $t0 $t7     # R0[x+1]
+                               add $t1 $t1 $t7     # V0[x+1]
+                               add $t2 $t2 $t7     # V1[x+1]
+
+                               add $t6 $t6 $t8     # i++;
+
+                               b for2               # Go to check condition of the loop again
+
+                          end2: jr $ra              # return
+      finish:

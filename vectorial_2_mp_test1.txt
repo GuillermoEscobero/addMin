@@ -17,14 +17,14 @@ addv_2_test1: li $s0 100      # Loop limit
               li $s2 1        # Step for the counter
               li $s3 4        # Offset to iterate through the array
 
-              # Use of stack needed to keep the value of $ra.
-              sub $sp $sp $s3 # Stack PUSH
-              sw $ra ($sp)
-
               la $s4 R0
               la $s5 V0
               la $s6 V1
               li $s7 10
+
+              # Use of stack needed to keep the value of $ra.
+              sub $sp $sp $s3 # Stack PUSH
+              sw $ra ($sp)
 
          for: bge $s1 $s0 end # Loop condition (i<100)
 
